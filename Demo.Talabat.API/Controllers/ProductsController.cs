@@ -31,8 +31,7 @@ namespace Demo.Talabat.API.Controllers
 			//create object from class BaseSpecifications and send it to the method
 			//	var spec = new BaseSpecifications<Product>(); //we used the constructor that don't have criteria 
 			//now we have a problem ---> includes are empty list while we have 2 include expression
-			var spec = new ProductWithBrandAndCategorySpecifications(); 
-
+			var spec = new ProductWithBrandAndCategorySpecifications();
 
 			var products = await productRepo. /*GetAllAsync*/GetAllWithSpecAsync(spec);
 			#region special type classes 
@@ -49,10 +48,11 @@ namespace Demo.Talabat.API.Controllers
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Product>> GetProduct(int id)
 		{
-			var product = await productRepo.GetAsync(id);
-
+			//this endpoint takes parameter [id] ... but our class ProductWithBrandAndCategorySpecifications has only parameter-less constructor
+			//we need to add another constructor to send it the Id and use it in the Criteria property 
+			var spec = new ProductWithBrandAndCategorySpecifications(id);
+			var product = await productRepo/*.GetAsync(id)*/.GetWithSpecAsync(spec);
 			if (product == null) return NotFound(new { Message = "not found", StatusCode = 404 });
-
 			return Ok(product);
 		}
 

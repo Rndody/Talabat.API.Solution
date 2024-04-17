@@ -9,14 +9,23 @@ namespace Demo.Talabat.Core.Specifications.Product_Specs
 {
 	public class ProductWithBrandAndCategorySpecifications : BaseSpecifications<Product> // we specify the type of T as this class is for Product specialy
 	{
+		#region Constructors
 		//the parameter-less constructor here chains on the base's parameter-less constructor
-		public ProductWithBrandAndCategorySpecifications() : base()
+		public ProductWithBrandAndCategorySpecifications() : base() => AddIncludes();
 		//now it will execite the code of the base constructor  in which it sets the Includes property with empty list
 		//now  add the product specific Includes expressions  needed[the brand and category]
+
+		public ProductWithBrandAndCategorySpecifications(int id) : base(P => P.Id == id)
+		=> AddIncludes();
+		#endregion
+
+		#region Methods
+		private void AddIncludes()
 		{
 			Includes.Add(P => P.Brand);
 			Includes.Add(P => P.Category);
 		}
+		#endregion
 
 	}
 }
