@@ -1,0 +1,44 @@
+﻿using Demo.Talabat.Core.Entities;
+using Demo.Talabat.Core.Entities.Product;
+using Demo.Talabat.Core.Repositories.Contract;
+using Demo.Talabat.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Demo.Talabat.Infrastructure
+{
+	public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity //we need to add the T condition to the class too not only the interface
+	{
+		#region Attributes 
+		private readonly ApplicationDbContext dbContext;
+		#endregion
+
+		//to get data from database we need to create object from DbCotext ... ask the CLR
+		#region Constructors
+		public GenericRepository(ApplicationDbContext dbContext) //ask CLR to create object implicitly 
+		{ this.dbContext = dbContext; }
+		#endregion
+
+		#region Methods/Endpoints
+		public async Task<IEnumerable<T>> GetAllAsync()
+		{
+			if (typeof(T) == typeof(Product))
+				return (IEnumerable<T>)await dbContext.Set<Product>().Include(P => P.Brand).Include(P => P.Category).ToListAsync();
+			return await dbContext.Set<T>().AsNoTracking().ToListAsync(); //remember AsNoTracking we only get data we won't make modification on it
+																		  //ToListAsync makes code Deferred 
+		}
+		public async Task<T?> GetAsync(int id)
+		{
+			if (typeof(T) == typeof(Product))
+				return await dbContext.Set<Product>().Where(P => P.Id == id).Include(P => P.Brand).Include(P => P.Category).FirstOrDefaultAsync() as T;
+			return await dbContext.Set<T>().FindAsync(id); //the FindAsync may return object or null ..so we need to make the T? nulable //change it in the interface also 
+		}
+
+		#endregion
+	}
+}
