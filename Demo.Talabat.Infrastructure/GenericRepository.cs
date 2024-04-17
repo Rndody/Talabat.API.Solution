@@ -25,7 +25,7 @@ namespace Demo.Talabat.Infrastructure
 		{ this.dbContext = dbContext; }
 		#endregion
 
-		#region Methods/Endpoints
+		#region Methods
 		public async Task<IEnumerable<T>> GetAllAsync()
 		///if (typeof(T) == typeof(Product))
 		///	return (IEnumerable<T>)await dbContext.Set<Product>().Include(P => P.Brand).Include(P => P.Category).ToListAsync();

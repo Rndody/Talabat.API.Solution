@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Demo.Talabat.Core.Specifications
 {
-	public class BaseSpecifications<T> : ISpecifications<T> where T : BaseEntity
+	public abstract class BaseSpecifications<T> : ISpecifications<T> where T : BaseEntity
 		//BaseEntity---> we need to build specifications that will be used to build query that we need to use against Model Entity
 	{
 		#region Properties

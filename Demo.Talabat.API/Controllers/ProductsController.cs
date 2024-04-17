@@ -1,5 +1,7 @@
 ﻿using Demo.Talabat.Core.Entities.Product;
 using Demo.Talabat.Core.Repositories.Contract;
+using Demo.Talabat.Core.Specifications;
+using Demo.Talabat.Core.Specifications.Product_Specs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,19 +9,17 @@ namespace Demo.Talabat.API.Controllers
 {
 	public class ProductsController : BaseApiController
 	{
-		#region Attributes
+		#region Fields
 		private readonly IGenericRepository<Product> productRepo;
 		#endregion
 
 		//ask the CLR to create object from class implements the IGenericRepository [develop against interface not concrete class]
 		//remember we don't have ProductRepository so we'll use the GenericRepository<Product>
-		#region Controllers
+		#region Constructors
 		public ProductsController(IGenericRepository<Product> productRepo) //ask the CLR in the Constructor impliicitly 
 																		   //remember to register the GenericRepository<Product> object in the DI Container 
 		{ this.productRepo = productRepo; }
 		#endregion
-
-
 
 		#region Endpoints
 		//2 endpoints 
@@ -27,7 +27,14 @@ namespace Demo.Talabat.API.Controllers
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<Product>>> GetProducts() //we won't use the name of the method in the routing as we used to do in the MVC
 		{
-			var products = await productRepo.GetAllAsync();
+			//to use the GetAllWithSpecAsync we need object from class implements ISpecifications 
+			//create object from class BaseSpecifications and send it to the method
+			//	var spec = new BaseSpecifications<Product>(); //we used the constructor that don't have criteria 
+			//now we have a problem ---> includes are empty list while we have 2 include expression
+			var spec = new ProductWithBrandAndCategorySpecifications(); 
+
+
+			var products = await productRepo. /*GetAllAsync*/GetAllWithSpecAsync(spec);
 			#region special type classes 
 			//	JsonResult result = new JsonResult(products);
 			/*the JsonResult inherits ActionResult and implements IActionResult
