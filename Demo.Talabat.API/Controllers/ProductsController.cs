@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Demo.Talabat.API.DTOs;
+using Demo.Talabat.API.Errors;
 using Demo.Talabat.Core.Entities.Product;
 using Demo.Talabat.Core.Repositories.Contract;
 using Demo.Talabat.Core.Specifications;
@@ -58,7 +59,7 @@ namespace Demo.Talabat.API.Controllers
 			///we need to add another constructor to send it the Id and use it in the Criteria property 
 			var spec = new ProductWithBrandAndCategorySpecifications(id);
 			var product = await productRepo/*.GetAsync(id)*/.GetWithSpecAsync(spec);
-			if (product == null) return NotFound(new { Message = "not found", StatusCode = 404 });
+			if (product == null) return NotFound(new ApiResponse(404));
 			return Ok(mapper.Map<Product, ProductToReturnDto>(product));
 		}
 		#endregion
