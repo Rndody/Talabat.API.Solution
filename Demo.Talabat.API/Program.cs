@@ -1,5 +1,6 @@
 
 using Demo.Talabat.API.Helpers;
+using Demo.Talabat.API.Middlewares;
 using Demo.Talabat.Core.Repositories.Contract;
 using Demo.Talabat.Infrastructure;
 using Demo.Talabat.Infrastructure.Data;
@@ -86,10 +87,13 @@ namespace Demo.Talabat.API
 
 			#region Configure Kestrel Middelware
 			// Configure the HTTP request pipeline. // determine the middleware of the app // NOTE: the middleware must be in order
+			app.UseMiddleware<ExceptionMiddleware>(); //creating object will call the constructor
+
 			if (app.Environment.IsDevelopment())
 			{//Document our API // no need to Document API in Production phase as it will be deployed on server and consumed by the frontend/mobile developer
 				app.UseSwagger();
 				app.UseSwaggerUI();
+				//app.UseDeveloperExceptionPage();  //called internally by default after .net 5
 			}
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
