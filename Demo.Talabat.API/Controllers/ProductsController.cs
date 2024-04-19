@@ -52,6 +52,10 @@ namespace Demo.Talabat.API.Controllers
 			return Ok(mapper.Map<IEnumerable<Product>, IEnumerable<ProductToReturnDto>>(products));
 		}
 		//------------------------------ Second Endpoints ----------------------------------------
+		#region improvment for swagger documentation
+		[ProducesResponseType(typeof(ProductToReturnDto), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)] 
+		#endregion
 		[HttpGet("{id}")]
 		public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
 		{
