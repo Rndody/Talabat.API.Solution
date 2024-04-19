@@ -95,6 +95,8 @@ namespace Demo.Talabat.API
 				app.UseSwaggerUI();
 				//app.UseDeveloperExceptionPage();  //called internally by default after .net 5
 			}
+			app.UseStatusCodePagesWithReExecute("/errors/{0}"); //will be executed in case the request sent doesn't match any of our endpoints
+
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
 
