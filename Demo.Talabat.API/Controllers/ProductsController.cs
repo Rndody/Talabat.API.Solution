@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Demo.Talabat.API.DTOs;
 using Demo.Talabat.API.Errors;
+using Demo.Talabat.API.Helpers;
 using Demo.Talabat.Core.Entities.Product;
 using Demo.Talabat.Core.Repositories.Contract;
 using Demo.Talabat.Core.Specifications;
@@ -36,7 +37,8 @@ namespace Demo.Talabat.API.Controllers
 		//2 endpoints 
 		//------------------------------ First Endpoints ----------------------------------------
 		[HttpGet]
-		public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams ) //we won't use the name of the method in the routing as we used to do in the MVC
+		//public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams ) //we won't use the name of the method in the routing as we used to do in the MVC
+		public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams ) //we won't use the name of the method in the routing as we used to do in the MVC
 		{
 			///to use the GetAllWithSpecAsync we need object from class implements ISpecifications 
 			///create object from class BaseSpecifications and send it to the method
@@ -53,7 +55,11 @@ namespace Demo.Talabat.API.Controllers
 			so we can use the OkObjectResult instead of JsonResult or get the status code of the result  --> */
 			//result.StatusCode = 200; 
 			#endregion
-			return Ok(mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
+
+			var data = mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+			var countSpec = new ProductsWithFilterationForCountSpecifications(specParams);
+			var count= await productRepo.GetCountAsync(/*spec*/countSpec);
+			return Ok( /* mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products)  */    new Pagination<ProductToReturnDto>(specParams.PageIndex, specParams.PageSize,count,data)     );
 		}
 		//------------------------------ Second Endpoints ----------------------------------------
 		#region improvment for swagger documentation

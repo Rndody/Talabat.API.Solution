@@ -18,7 +18,7 @@ namespace Demo.Talabat.Core.Specifications.Product_Specs
 			set { pageSize = value > MaxPageSize ? MaxPageSize : value; }
 		}
 
-		public int PagIndex { get; set; } = 1;
+		public int PageIndex { get; set; } = 1;
 		public string? Sort { get; set; }
 		public int? BrandId { get; set; }
 

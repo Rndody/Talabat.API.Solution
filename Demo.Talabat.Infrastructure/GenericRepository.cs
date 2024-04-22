@@ -45,9 +45,14 @@ namespace Demo.Talabat.Infrastructure
 		public async Task<T?> GetWithSpecAsync(ISpecifications<T> spec)
 		=> await /*SpecificationsEvaluator<T>.GetQuery(dbContext.Set<T>(), spec)*/ApplySpecifications(spec).FirstOrDefaultAsync();
 
+		public async Task<int> GetCountAsync(ISpecifications<T> spec)
+		{
+			return await ApplySpecifications(spec).CountAsync();
+		}
 		/// write the common code in a separate method ---->		
 		private IQueryable<T> ApplySpecifications(ISpecifications<T> specifications)
 	=> SpecificationsEvaluator<T>.GetQuery(dbContext.Set<T>(), specifications);
+
 		#endregion
 	}
 }
