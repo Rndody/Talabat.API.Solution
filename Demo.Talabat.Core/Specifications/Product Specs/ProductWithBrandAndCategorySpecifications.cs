@@ -11,18 +11,18 @@ namespace Demo.Talabat.Core.Specifications.Product_Specs
 	{
 		#region Constructors
 		//the parameter-less constructor here chains on the base's parameter-less constructor
-		public ProductWithBrandAndCategorySpecifications(string sort, int? brandId, int? categoryId)
+		public ProductWithBrandAndCategorySpecifications(ProductSpecParams specParams)
 			: base(P =>
 
-			(!brandId.HasValue || P.BrandId == brandId.Value) &&
-			(!categoryId.HasValue || P.CategoryId == categoryId.Value)
+			(!specParams.BrandId.HasValue || P.BrandId == specParams.BrandId.Value) &&
+			(!specParams.CategoryId.HasValue || P.CategoryId == specParams.CategoryId.Value)
 
 			)
 		{
 			AddIncludes();
-			if (!string.IsNullOrEmpty(sort))
+			if (!string.IsNullOrEmpty(specParams.Sort))
 			{
-				switch (sort)
+				switch (specParams.Sort)
 				{
 					case "priceAsc":
 						AddOrderBy(P => P.Price); break;
@@ -33,6 +33,7 @@ namespace Demo.Talabat.Core.Specifications.Product_Specs
 				}
 			}
 			else AddOrderBy(P => P.Name);
+			ApplyPagination((specParams.PagIndex - 1 * specParams.PageSize), specParams.PageSize);
 		}
 		//now it will execite the code of the base constructor  in which it sets the Includes property with empty list
 		//now  add the product specific Includes expressions  needed[the brand and category]

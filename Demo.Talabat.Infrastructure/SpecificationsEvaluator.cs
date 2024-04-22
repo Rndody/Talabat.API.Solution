@@ -12,22 +12,23 @@ namespace Demo.Talabat.Infrastructure
 {
 	internal static class SpecificationsEvaluator<TEntity> where TEntity : BaseEntity  //make it generic as we don't know the query will run against which DbSet 
 	{
-		public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery, ISpecifications<TEntity> specs)
+		public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery, ISpecifications<TEntity> spec	)
 		{
 			var query = inputQuery; /*dbContext.Set<Products>()*/
 
-			if (specs.Criteria != null)
-				query = query.Where(specs.Criteria); // the criteria holds the lambda expression P=>P.Id
-			if (specs.OrderBy !=null)
-				query = query.OrderBy(specs.OrderBy);
-			else if (specs.OrderByDesc !=null) 
-				query=query.OrderByDescending(specs.OrderByDesc);
+			if (spec.Criteria != null)
+				query = query.Where(spec.Criteria); // the criteria holds the lambda expression P=>P.Id
+			if (spec.OrderBy !=null)
+				query = query.OrderBy(spec.OrderBy);
+			else if (spec.OrderByDesc !=null) 
+				query=query.OrderByDescending(spec.OrderByDesc);
 				//query= dbContext.Set<Product>().Where(P=>P.Id);
 				//Includes ==> list has 2 emelents
 				//1--P=>P.Brand
 				//2--P=>P.Category
-
-				query = specs.Includes.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression)); //put the query returned in the query variable [this is the query builder ]
+				if(spec.IsPaginationEnabled)
+				query=query.Skip(spec.Skip).Take(spec.Take);
+				query = spec.Includes.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression)); //put the query returned in the query variable [this is the query builder ]
 
 			// dbContext.Set<Product>().Where(P=>P.Id) ==> seed [query]
 			//1st iteration ----> dbContext.Set<Product>().Where(P=>P.Id) .Include(P=>P.Brand)
