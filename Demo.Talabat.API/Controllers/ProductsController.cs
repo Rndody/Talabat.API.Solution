@@ -36,7 +36,7 @@ namespace Demo.Talabat.API.Controllers
 		//2 endpoints 
 		//------------------------------ First Endpoints ----------------------------------------
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<ProductToReturnDto>>> GetProducts() //we won't use the name of the method in the routing as we used to do in the MVC
+		public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts() //we won't use the name of the method in the routing as we used to do in the MVC
 		{
 			///to use the GetAllWithSpecAsync we need object from class implements ISpecifications 
 			///create object from class BaseSpecifications and send it to the method
@@ -53,7 +53,7 @@ namespace Demo.Talabat.API.Controllers
 			so we can use the OkObjectResult instead of JsonResult or get the status code of the result  --> */
 			//result.StatusCode = 200; 
 			#endregion
-			return Ok(mapper.Map<IEnumerable<Product>, IEnumerable<ProductToReturnDto>>(products));
+			return Ok(mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
 		}
 		//------------------------------ Second Endpoints ----------------------------------------
 		#region improvment for swagger documentation
@@ -74,7 +74,7 @@ namespace Demo.Talabat.API.Controllers
 		//------------------------------ Third  Endpoints ----------------------------------------
 
 		[HttpGet("brands")]
-		public async Task<ActionResult<IEnumerable<ProductBrand>>> GetBrands()
+		public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
 		{
 			var brands=await brandsRepo.GetAllAsync();
 			return Ok(brands);
@@ -83,7 +83,7 @@ namespace Demo.Talabat.API.Controllers
 		//------------------------------ Fourth Endpoints ----------------------------------------
 
 		[HttpGet("categories")]
-		public async Task<ActionResult<IEnumerable<ProductCategory>>> GetCategories()
+		public async Task<ActionResult<IReadOnlyList<ProductCategory>>> GetCategories()
 
 		{
 			var categories = await categoriesRepo.GetAllAsync();
