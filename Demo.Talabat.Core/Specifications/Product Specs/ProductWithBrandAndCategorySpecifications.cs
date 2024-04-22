@@ -11,7 +11,23 @@ namespace Demo.Talabat.Core.Specifications.Product_Specs
 	{
 		#region Constructors
 		//the parameter-less constructor here chains on the base's parameter-less constructor
-		public ProductWithBrandAndCategorySpecifications() : base() => AddIncludes();
+		public ProductWithBrandAndCategorySpecifications(string sort) : base()
+		{
+			AddIncludes();
+			if(!string.IsNullOrEmpty(sort))
+			{
+				switch(sort)
+				{
+					case "priceAsc":
+					AddOrderBy(P=>P.Price); break;
+					case "priceDesc":
+						AddOrderByDesc(P => P.Price); break;
+					default:AddOrderBy(P=>P.Name); break;
+						
+				}
+			}
+			else AddOrderBy(P=>P.Name);
+		}
 		//now it will execite the code of the base constructor  in which it sets the Includes property with empty list
 		//now  add the product specific Includes expressions  needed[the brand and category]
 

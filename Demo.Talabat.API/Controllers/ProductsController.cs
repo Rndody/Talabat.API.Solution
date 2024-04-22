@@ -36,13 +36,13 @@ namespace Demo.Talabat.API.Controllers
 		//2 endpoints 
 		//------------------------------ First Endpoints ----------------------------------------
 		[HttpGet]
-		public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts() //we won't use the name of the method in the routing as we used to do in the MVC
+		public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts(string sort) //we won't use the name of the method in the routing as we used to do in the MVC
 		{
 			///to use the GetAllWithSpecAsync we need object from class implements ISpecifications 
 			///create object from class BaseSpecifications and send it to the method
 			///	var spec = new BaseSpecifications<Product>(); //we used the constructor that don't have criteria 
 			///now we have a problem ---> includes are empty list while we have 2 include expression
-			var spec = new ProductWithBrandAndCategorySpecifications();
+			var spec = new ProductWithBrandAndCategorySpecifications(sort);
 
 			var products = await productRepo. /*GetAllAsync*/GetAllWithSpecAsync(spec);
 			#region special type classes 

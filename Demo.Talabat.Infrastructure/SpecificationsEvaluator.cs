@@ -18,13 +18,16 @@ namespace Demo.Talabat.Infrastructure
 
 			if (specs.Criteria != null)
 				query = query.Where(specs.Criteria); // the criteria holds the lambda expression P=>P.Id
+			if (specs.OrderBy !=null)
+				query = query.OrderBy(specs.OrderBy);
+			else if (specs.OrderByDesc !=null) 
+				query=query.OrderByDescending(specs.OrderByDesc);
+				//query= dbContext.Set<Product>().Where(P=>P.Id);
+				//Includes ==> list has 2 emelents
+				//1--P=>P.Brand
+				//2--P=>P.Category
 
-			//query= dbContext.Set<Product>().Where(P=>P.Id);
-			//Includes ==> list has 2 emelents
-			//1--P=>P.Brand
-			//2--P=>P.Category
-
-			query = specs.Includes.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression)); //put the query returned in the query variable [this is the query builder ]
+				query = specs.Includes.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression)); //put the query returned in the query variable [this is the query builder ]
 
 			// dbContext.Set<Product>().Where(P=>P.Id) ==> seed [query]
 			//1st iteration ----> dbContext.Set<Product>().Where(P=>P.Id) .Include(P=>P.Brand)

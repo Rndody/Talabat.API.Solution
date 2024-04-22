@@ -21,5 +21,10 @@ namespace Demo.Talabat.Core.Specifications
 		public List<Expression<Func<T, object>>> Includes { get; set; } //return object [brand/cateory/order-item/department]
 																		//the parameter T ---> product/order/employee 
 
+		public Expression<Func<T, object>> OrderBy { get; set; }
+		public Expression<Func<T, object>> OrderByDesc { get; set; }
+
+
+
 	}
 }
