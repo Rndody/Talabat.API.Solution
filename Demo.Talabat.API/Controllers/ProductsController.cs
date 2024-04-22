@@ -14,16 +14,20 @@ namespace Demo.Talabat.API.Controllers
 	{
 		#region Fields
 		private readonly IGenericRepository<Product> productRepo;
+		private readonly IGenericRepository<ProductBrand> brandsRepo;
+		private readonly IGenericRepository<ProductCategory> categoriesRepo;
 		private readonly IMapper mapper;
 		#endregion
 		//ask the CLR to create object from class implements the IGenericRepository [develop against interface not concrete class]
 		//remember we don't have ProductRepository so we'll use the GenericRepository<Product>
 		#region Constructors
-		public ProductsController(IGenericRepository<Product> productRepo, IMapper mapper) //ask the CLR in the Constructor impliicitly 
+		public ProductsController(IGenericRepository<Product> productRepo, IGenericRepository<ProductBrand> brandsRepo, IGenericRepository<ProductCategory> categoriesRepo, IMapper mapper) //ask the CLR in the Constructor impliicitly 
 																						   //remember to register the GenericRepository<Product> object in the DI Container 
 																						   //remember to register the IMapper in the DI container --> in the container we need to add our profile 
 		{
 			this.productRepo = productRepo;
+			this.brandsRepo = brandsRepo;
+			this.categoriesRepo = categoriesRepo;
 			this.mapper = mapper;
 		}
 		#endregion
@@ -66,6 +70,32 @@ namespace Demo.Talabat.API.Controllers
 			if (product == null) return NotFound(new ApiResponse(404));
 			return Ok(mapper.Map<Product, ProductToReturnDto>(product));
 		}
+
+		//------------------------------ Third  Endpoints ----------------------------------------
+
+		[HttpGet("brands")]
+		public async Task<ActionResult<IEnumerable<ProductBrand>>> GetBrands()
+		{
+			var brands=await brandsRepo.GetAllAsync();
+			return Ok(brands);
+		}
+
+		//------------------------------ Fourth Endpoints ----------------------------------------
+
+		[HttpGet("categories")]
+		public async Task<ActionResult<IEnumerable<ProductCategory>>> GetCategories()
+
+		{
+			var categories = await categoriesRepo.GetAllAsync();
+			return Ok(categories);
+		}
+
+
+
+
+
+
+
 		#endregion
 	}
 }
