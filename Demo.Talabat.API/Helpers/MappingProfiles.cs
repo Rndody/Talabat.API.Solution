@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Demo.Talabat.API.DTOs;
+using Demo.Talabat.Core.Entities;
 using Demo.Talabat.Core.Entities.Product;
 
 namespace Demo.Talabat.API.Helpers
@@ -18,6 +19,8 @@ namespace Demo.Talabat.API.Helpers
 			//.ForMember(P=>P.PictureUrl, O=>O.MapFrom(S=>$"{configuration["ApiBaseUrl"]}/{S.PictureUrl}"));
 			.ForMember(P => P.Category, O => O.MapFrom<ProductPictureUrlResolver>());
 
+			CreateMap<CustomerBasketDto, CustomerBasket>();
+			CreateMap<BasketItemDto, BasketItem>();
 		}
 	}
 }

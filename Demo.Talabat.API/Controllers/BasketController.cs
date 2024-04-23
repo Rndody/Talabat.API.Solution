@@ -1,4 +1,6 @@
-﻿using Demo.Talabat.API.Errors;
+﻿using AutoMapper;
+using Demo.Talabat.API.DTOs;
+using Demo.Talabat.API.Errors;
 using Demo.Talabat.Core.Entities;
 using Demo.Talabat.Core.Repositories.Contract;
 using Microsoft.AspNetCore.Http;
@@ -11,10 +13,12 @@ namespace Demo.Talabat.API.Controllers
 	public class BasketController : BaseApiController
 	{
 		private readonly IBasketRepository basketRepository;
+		private readonly IMapper mapper;
 
-		public BasketController(IBasketRepository basketRepository)
+		public BasketController(IBasketRepository basketRepository, IMapper mapper)
 		{
 			this.basketRepository = basketRepository;
+			this.mapper = mapper;
 		}
 
 		[HttpGet("{id}")]
@@ -26,10 +30,10 @@ namespace Demo.Talabat.API.Controllers
 
 
 		[HttpPost]
-		public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasket basket)
+		public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDto basket)
 		{
-
-			var createdOrUpdatedBasket = await basketRepository.UpdateBasketAsync(basket);
+			var mappedBasket=mapper.Map<CustomerBasketDto, CustomerBasket>(basket);
+			var createdOrUpdatedBasket = await basketRepository.UpdateBasketAsync(mappedBasket);
 			if (createdOrUpdatedBasket == null) return BadRequest(new ApiResponse(400));
 			return Ok(createdOrUpdatedBasket);
 		}
