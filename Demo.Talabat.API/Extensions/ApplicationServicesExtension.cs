@@ -5,10 +5,13 @@ using Microsoft.AspNetCore.Builder;
 
 namespace Demo.Talabat.API.Extensions
 {
-	public static class ApplicationSrvicesExtension
+	public static class ApplicationServicesExtension
 	{
-		public static IServiceCollection  AddApplicationServices(this IServiceCollection services)
+		public static IServiceCollection AddApplicationServices(this IServiceCollection services)
 		{
+			services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
+
+
 			services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 			/*instead of adding each domain model in a separate line
 			 * [when asking for creating object from Interface IGenericRepository<Product> --> create object from class GenericRepository<Product> ]
