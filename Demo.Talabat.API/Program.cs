@@ -1,8 +1,12 @@
 
+using Demo.Talabat.API.Extensions;
+using Demo.Talabat.API.Helpers;
+using Demo.Talabat.API.Middlewares;
 using Demo.Talabat.Core.Repositories.Contract;
 using Demo.Talabat.Infrastructure;
 using Demo.Talabat.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace Demo.Talabat.API
 {
@@ -22,12 +26,16 @@ namespace Demo.Talabat.API
 
 			webApplicationBuilder.Services.AddControllers();// Register Services requierd by APIs
 
+			#region Clean program class [Swagger]
 			#region Register Swagger Services in the DI Container
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-			webApplicationBuilder.Services.AddEndpointsApiExplorer();
-			webApplicationBuilder.Services.AddSwaggerGen();
+			//webApplicationBuilder.Services.AddEndpointsApiExplorer();
+			//webApplicationBuilder.Services.AddSwaggerGen();
+			webApplicationBuilder.Services.AddSwaggerServices();
+
 			#endregion
 
+			#endregion
 			webApplicationBuilder.Services.AddDbContext<ApplicationDbContext>(Options =>
 			///AddDbContext method is in the  Microsoft.EntityFrameworkCore.SqlServer package which we installed in the infrastructure layer 
 			///make reference to the infrastructure layer so that we can use the package here, also we'll need to make the reference so that we can refere to our DbContext class
@@ -36,12 +44,27 @@ namespace Demo.Talabat.API
 			   ///now the webApplicationBuilder object has Configuration property --> from type ConfigurationManager
 				Options.UseLazyLoadingProxies().UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
 			});
+			webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+			{
+				var connection = webApplicationBuilder.Configuration.GetConnectionString("Redis");
+				return ConnectionMultiplexer.Connect(connection);
+			});
 
-			webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-			/*instead of adding each domain model in a separate line
-			 * [when asking for creating object from Interface IGenericRepository<Product> --> create object from class GenericRepository<Product> ]
-			*we can use the 2nd overload of the AddScoped method that determines the lifetime of the object, 
-			*the 2nd overload----> when asking for creating object from IGenericRepository<> of type ... create object from GenericRepository<> of that type*/
+			#region Clean Up Program Class [Services]
+			//ApplicationSrvicesExtension.AddApplicationServices(webApplicationBuilder.Services);
+			//call it as extension method
+			webApplicationBuilder.Services.AddApplicationServices();
+			#region deleted code => extension method
+			//webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+			///*instead of adding each domain model in a separate line
+			// * [when asking for creating object from Interface IGenericRepository<Product> --> create object from class GenericRepository<Product> ]
+			//*we can use the 2nd overload of the AddScoped method that determines the lifetime of the object, 
+			//*the 2nd overload----> when asking for creating object from IGenericRepository<> of type ... create object from GenericRepository<> of that type*/
+
+			////	webApplicationBuilder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles())); //----------old way , use it in case we have more than one profile
+			//webApplicationBuilder.Services.AddAutoMapper(typeof(MappingProfiles));   //use the other overload 
+			#endregion 
+			#endregion
 			#endregion
 
 			var app = webApplicationBuilder.Build();  //the Kestrel 
@@ -82,13 +105,21 @@ namespace Demo.Talabat.API
 
 			#region Configure Kestrel Middelware
 			// Configure the HTTP request pipeline. // determine the middleware of the app // NOTE: the middleware must be in order
+			app.UseMiddleware<ExceptionMiddleware>(); //creating object will call the constructor
+
 			if (app.Environment.IsDevelopment())
 			{//Document our API // no need to Document API in Production phase as it will be deployed on server and consumed by the frontend/mobile developer
-				app.UseSwagger();
-				app.UseSwaggerUI();
+				#region program clean up follow [swagger]
+				//app.UseSwagger();
+				//app.UseSwaggerUI(); 
+				#endregion
+				app.UseSwaggerMiddlewares();
+				//app.UseDeveloperExceptionPage();  //called internally by default after .net 5
 			}
+			app.UseStatusCodePagesWithReExecute("/errors/{0}"); //will be executed in case the request sent doesn't match any of our endpoints
+
 			app.UseHttpsRedirection();
-			app.UseAuthorization();
+			app.UseStaticFiles();
 
 			app.MapControllers(); //reads the route of the controller from the controller Attribute Decorator
 			#endregion
