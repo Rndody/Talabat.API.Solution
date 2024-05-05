@@ -5,6 +5,7 @@ using Demo.Talabat.API.Middlewares;
 using Demo.Talabat.Core.Repositories.Contract;
 using Demo.Talabat.Infrastructure;
 using Demo.Talabat.Infrastructure.Data;
+using Demo.Talabat.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -34,22 +35,6 @@ namespace Demo.Talabat.API
 			webApplicationBuilder.Services.AddSwaggerServices();
 
 			#endregion
-
-			#endregion
-			webApplicationBuilder.Services.AddDbContext<ApplicationDbContext>(Options =>
-			///AddDbContext method is in the  Microsoft.EntityFrameworkCore.SqlServer package which we installed in the infrastructure layer 
-			///make reference to the infrastructure layer so that we can use the package here, also we'll need to make the reference so that we can refere to our DbContext class
-			{  ///how to get the connection string from the appsettings file?
-			   ///in .net 5 in the StartUp	class we used to have Configuration property 
-			   ///now the webApplicationBuilder object has Configuration property --> from type ConfigurationManager
-				Options.UseLazyLoadingProxies().UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
-			});
-			webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
-			{
-				var connection = webApplicationBuilder.Configuration.GetConnectionString("Redis");
-				return ConnectionMultiplexer.Connect(connection);
-			});
-
 			#region Clean Up Program Class [Services]
 			//ApplicationSrvicesExtension.AddApplicationServices(webApplicationBuilder.Services);
 			//call it as extension method
@@ -65,6 +50,29 @@ namespace Demo.Talabat.API
 			//webApplicationBuilder.Services.AddAutoMapper(typeof(MappingProfiles));   //use the other overload 
 			#endregion 
 			#endregion
+
+			#endregion
+			webApplicationBuilder.Services.AddDbContext<ApplicationDbContext>(Options =>
+			///AddDbContext method is in the  Microsoft.EntityFrameworkCore.SqlServer package which we installed in the infrastructure layer 
+			///make reference to the infrastructure layer so that we can use the package here, also we'll need to make the reference so that we can refere to our DbContext class
+			{  ///how to get the connection string from the appsettings file?
+			   ///in .net 5 in the StartUp	class we used to have Configuration property 
+			   ///now the webApplicationBuilder object has Configuration property --> from type ConfigurationManager
+				Options.UseLazyLoadingProxies().UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
+			});
+
+			webApplicationBuilder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+			{
+				options.UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("IdentityConnection"));
+			});
+
+
+			webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+			{
+				var connection = webApplicationBuilder.Configuration.GetConnectionString("Redis");
+				return ConnectionMultiplexer.Connect(connection);
+			});
+
 			#endregion
 
 			var app = webApplicationBuilder.Build();  //the Kestrel 
@@ -77,8 +85,9 @@ namespace Demo.Talabat.API
 			var services = scope.ServiceProvider;
 			//---------------------- 3 add our DbContext 
 			var dbContext = services.GetRequiredService<ApplicationDbContext>();
+			var identityDbContext = services.GetRequiredService<ApplicationIdentityDbContext>();
 
-			var loggerFactory = services.GetRequiredService<ILoggerFactory>();//ask the CLR to create object from type ILoggerFactory
+            var loggerFactory = services.GetRequiredService<ILoggerFactory>();//ask the CLR to create object from type ILoggerFactory
 																			  //Note: we allowed the DI for the ILoggerFactory in when we added the AddControllers in the Services DI 
 																			  //ILoggerFactory uses a design pattern [ Abstract Factory ]
 			try
@@ -87,8 +96,10 @@ namespace Demo.Talabat.API
 				//after appling the migration add the data in the data seed 
 				//remember the ApplicationDbContextSeed is static class with static method , the method takes object from ApplicationDbContext class
 				await ApplicationDbContextSeed.SeedAsync(dbContext);
-			}
-			catch (Exception ex)
+                await identityDbContext.Database.MigrateAsync();
+
+            }
+            catch (Exception ex)
 			{
 				//use a ready made service to display the error msg in a presentable way ---> loggerFactory 
 				var logger /*the place we will save the logs in*/= loggerFactory.CreateLogger<Program  /*we need to log the exceptions happens in the program class*/>();
