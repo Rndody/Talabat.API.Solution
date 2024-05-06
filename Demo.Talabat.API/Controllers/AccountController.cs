@@ -1,5 +1,6 @@
 ﻿using Demo.Talabat.API.DTOs;
 using Demo.Talabat.API.Errors;
+using Demo.Talabat.API.Extensions;
 using Demo.Talabat.Core.Entities.Identity;
 using Demo.Talabat.Core.Services.Contract;
 using Microsoft.AspNetCore.Authorization;
@@ -95,6 +96,18 @@ namespace Demo.Talabat.API.Controllers
                 Token = await authService.CreateTokenAsync(user, userManager)
             });
         }
+        #endregion
+
+        #region Get User Address
+        [Authorize]
+        [HttpGet("address")] //Get: /api/account/address
+        public async Task<ActionResult<Address>> GetUserAddress()
+        {
+            
+            var user=await userManager.FindUserWithAddressAsync(User);
+            return Ok(user.Address);
+        }
+
         #endregion
 
         #endregion
