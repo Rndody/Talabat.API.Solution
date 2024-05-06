@@ -16,14 +16,17 @@ namespace Demo.Talabat.Application.AuthService
 {
     public class AuthService : IAuthService
     {
-
+        #region Fields
         private readonly IConfiguration configuration;
+        #endregion
 
+
+        #region Constructors
         public AuthService(IConfiguration configuration) //IConfiguration to deal with the appsettings
-        {
-            this.configuration = configuration;
-        }
+        { this.configuration = configuration; }
+        #endregion
 
+        #region Methods
         public async Task<string> CreateTokenAsync(ApplicationUser user, UserManager<ApplicationUser> userManager)
         {
             #region Information Exchange
@@ -36,26 +39,20 @@ namespace Demo.Talabat.Application.AuthService
                 new Claim(ClaimTypes.Name, user.DisplayName),
                 new Claim(ClaimTypes.Email, user.Email)
             };
-
             var userRoles = await userManager.GetRolesAsync(user);
-            foreach (var role in userRoles)
-            {
-                //we used the user roles as claims and adding them to the claims 
+            foreach (var role in userRoles)  //we used the user roles as claims and adding them to the claims 
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
-            }
             #endregion
 
             #region Build the Security key
-            //install the JWT package in the Application layer
+            //----> install the JWT package in the Application layer
 
             //var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("StrongAuthenticationKey")); //better to put the key in the appsettings
             var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:AuthKey"] ?? string.Empty));
-
             #endregion
 
             #region Registered Claims  pre defined claims
             //we'll write only 3 of them  1-audience 2-issure 3-expire
-
             var token = new JwtSecurityToken(   //this is the object we are going to use to build the token
                 audience: configuration["JWT:ValidAudience"],
                 issuer: configuration["JWT:ValidIssuer"],
@@ -69,6 +66,7 @@ namespace Demo.Talabat.Application.AuthService
             return new JwtSecurityTokenHandler().WriteToken(token);
             #endregion
         }
+        #endregion
 
 
     }

@@ -2,8 +2,10 @@
 using Demo.Talabat.API.Extensions;
 using Demo.Talabat.API.Helpers;
 using Demo.Talabat.API.Middlewares;
+using Demo.Talabat.Application.AuthService;
 using Demo.Talabat.Core.Entities.Identity;
 using Demo.Talabat.Core.Repositories.Contract;
+using Demo.Talabat.Core.Services.Contract;
 using Demo.Talabat.Infrastructure;
 using Demo.Talabat.Infrastructure.Data;
 using Demo.Talabat.Infrastructure.Identity;
@@ -77,6 +79,8 @@ namespace Demo.Talabat.API
 
             webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>()// AddIdentity register the Identity services in the container
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>(); // register the repositories in the container 
+
+            webApplicationBuilder.Services.AddScoped(typeof(IAuthService), typeof(AuthService));
             #endregion
 
 

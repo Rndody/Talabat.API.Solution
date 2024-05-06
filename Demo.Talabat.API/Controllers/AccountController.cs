@@ -1,6 +1,7 @@
 ﻿using Demo.Talabat.API.DTOs;
 using Demo.Talabat.API.Errors;
 using Demo.Talabat.Core.Entities.Identity;
+using Demo.Talabat.Core.Services.Contract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +13,18 @@ namespace Demo.Talabat.API.Controllers
         #region Fields
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IAuthService authService;
         #endregion
 
         #region Constructors
         public AccountController(  //ask the clr to create object from UserManager & SignInManager
           UserManager<ApplicationUser> userManager,
-          SignInManager<ApplicationUser> signInManager)
+          SignInManager<ApplicationUser> signInManager,
+          IAuthService authService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.authService = authService;
         }
         #endregion
 
@@ -41,7 +45,7 @@ namespace Demo.Talabat.API.Controllers
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
-                Token = "tokennn" //will handle this later when we use the JWT
+                Token = await authService.CreateTokenAsync(user, userManager)
             });
         }
 
@@ -68,7 +72,7 @@ namespace Demo.Talabat.API.Controllers
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
-                Token = "tookkeeeen"
+                Token = await authService.CreateTokenAsync(user, userManager)
 
             });
         }
