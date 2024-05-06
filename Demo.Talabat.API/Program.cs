@@ -9,9 +9,12 @@ using Demo.Talabat.Core.Services.Contract;
 using Demo.Talabat.Infrastructure;
 using Demo.Talabat.Infrastructure.Data;
 using Demo.Talabat.Infrastructure.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
+using System.Text;
 
 namespace Demo.Talabat.API
 {
@@ -79,13 +82,44 @@ namespace Demo.Talabat.API
 
             webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>()// AddIdentity register the Identity services in the container
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>(); // register the repositories in the container 
+          
+            #region adding the authentication method as extension method
+            webApplicationBuilder.Services.AddAuthServices(webApplicationBuilder.Configuration);
 
-            webApplicationBuilder.Services.AddScoped(typeof(IAuthService), typeof(AuthService));
+            #region  2nd  and 3rd overlads for the AddAuthentication method 
+            ///2nd overload 
+            /// webApplicationBuilder.Services.AddAuthentication(/*"Bearer"*//* JwtBearerDefaults.AuthenticationScheme*/)  <-----------
+            ///this method is called by default and it returns AuthenticationBuilder,we'll use this AuthenticationBuilder to add the schema            
+            ///we send the name of the schema in the method as a parameter to make it the default schema
+            ///instead of writing the schema name as string an mis type it ---> we write  JwtBearerDefaults.AuthenticationScheme
+
+            ///3rd overload--->
+            //webApplicationBuilder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // setting the default schema with the 3rd overlad
+            //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;// any endpoint uses [Authorize] will use this schema
+            //})
+            //.AddJwtBearer(/*"Bearer",*/ options => //takes action of one parameter [JWTBearerOptions]---> authentication handler 
+            //  {
+            //      options.TokenValidationParameters = new TokenValidationParameters()
+            //      {
+            //          ValidateIssuer = true,
+            //          ValidIssuer = webApplicationBuilder.Configuration["JWT:ValidIssuer"],
+            //          ValidateAudience = true,
+            //          ValidAudience = webApplicationBuilder.Configuration["JWT:ValidAudience"],
+            //          ValidateIssuerSigningKey = true,
+            //          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(webApplicationBuilder.Configuration["JWT:AuthKey"] ?? string.Empty)),
+            //          ValidateLifetime = true,
+            //          ClockSkew = TimeSpan.Zero,
+            //      };
+            //  });
+
             #endregion
 
+         //   webApplicationBuilder.Services.AddScoped(typeof(IAuthService), typeof(AuthService));
+            #endregion
 
-
-
+            #endregion
 
 
 

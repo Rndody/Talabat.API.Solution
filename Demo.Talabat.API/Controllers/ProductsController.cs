@@ -6,6 +6,8 @@ using Demo.Talabat.Core.Entities.Product;
 using Demo.Talabat.Core.Repositories.Contract;
 using Demo.Talabat.Core.Specifications;
 using Demo.Talabat.Core.Specifications.Product_Specs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,21 +25,23 @@ namespace Demo.Talabat.API.Controllers
 		//remember we don't have ProductRepository so we'll use the GenericRepository<Product>
 		#region Constructors
 		public ProductsController(IGenericRepository<Product> productRepo, IGenericRepository<ProductBrand> brandsRepo, IGenericRepository<ProductCategory> categoriesRepo, IMapper mapper) //ask the CLR in the Constructor impliicitly 
-																						   //remember to register the GenericRepository<Product> object in the DI Container 
-																						   //remember to register the IMapper in the DI container --> in the container we need to add our profile 
+																																															//remember to register the GenericRepository<Product> object in the DI Container 
+																																															//remember to register the IMapper in the DI container --> in the container we need to add our profile 
 		{
 			this.productRepo = productRepo;
 			this.brandsRepo = brandsRepo;
 			this.categoriesRepo = categoriesRepo;
 			this.mapper = mapper;
 		}
-		#endregion
+        #endregion
 
-		#region Endpoints
-		//2 endpoints 
-		//------------------------------ First Endpoints ----------------------------------------
-		[HttpGet]
-		//public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams ) //we won't use the name of the method in the routing as we used to do in the MVC
+        #region Endpoints
+        //4 endpoints 
+        //------------------------------ First Endpoints ----------------------------------------
+        //[Authorize   (AuthenticationSchemes =/*"Bearer"*/ JwtBearerDefaults.AuthenticationScheme)] //we specified the DefaultChallengeScheme in the Main()
+        [Authorize]
+		[HttpGet] //Get: /api/products
+		//public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams ) 
 		public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams ) //we won't use the name of the method in the routing as we used to do in the MVC
 		{
 			///to use the GetAllWithSpecAsync we need object from class implements ISpecifications 
