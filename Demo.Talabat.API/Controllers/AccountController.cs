@@ -107,13 +107,29 @@ namespace Demo.Talabat.API.Controllers
         [HttpGet("address")] //Get: /api/account/address
         public async Task<ActionResult<AddressDto>> GetUserAddress()
         {
-            
-            var user=await userManager.FindUserWithAddressAsync(User);
+
+            var user = await userManager.FindUserWithAddressAsync(User);
             return Ok(mapper.Map<AddressDto>(user.Address));
         }
 
         #endregion
 
+
+        #region Update User Address
+
+        [Authorize]
+        [HttpPut("address")]//put: /api/account/address
+        public async Task<ActionResult<Address>> UpdateUserAddress(AddressDto address)
+        {
+            var updatedAddress = mapper.Map<Address>(address);
+            var user = await userManager.FindUserWithAddressAsync(User);
+            updatedAddress.Id = user.Address.Id;
+            user.Address = updatedAddress;
+            var result = await userManager.UpdateAsync(user);
+            if (!result.Succeeded) return BadRequest(/*new ApiValidationErrorResponse() { Errors=result.Errors.Select(E=>E.Description)}*/);
+            return Ok(address);
+        }
+        #endregion
         #endregion
     }
 }
