@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Demo.Talabat.API.DTOs;
 using Demo.Talabat.Core.Entities;
+using Demo.Talabat.Core.Entities.Identity;
 using Demo.Talabat.Core.Entities.Product;
 
 namespace Demo.Talabat.API.Helpers
@@ -21,6 +22,8 @@ namespace Demo.Talabat.API.Helpers
 
 			CreateMap<CustomerBasketDto, CustomerBasket>();
 			CreateMap<BasketItemDto, BasketItem>();
+
+			CreateMap<Address, AddressDto>();
 		}
 	}
 }

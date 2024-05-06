@@ -1,4 +1,5 @@
-﻿using Demo.Talabat.API.DTOs;
+﻿using AutoMapper;
+using Demo.Talabat.API.DTOs;
 using Demo.Talabat.API.Errors;
 using Demo.Talabat.API.Extensions;
 using Demo.Talabat.Core.Entities.Identity;
@@ -17,17 +18,20 @@ namespace Demo.Talabat.API.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IAuthService authService;
+        private readonly IMapper mapper;
         #endregion
 
         #region Constructors
         public AccountController(  //ask the clr to create object from UserManager & SignInManager
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
-          IAuthService authService)
+          IAuthService authService,
+          IMapper mapper)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.authService = authService;
+            this.mapper = mapper;
         }
         #endregion
 
@@ -101,11 +105,11 @@ namespace Demo.Talabat.API.Controllers
         #region Get User Address
         [Authorize]
         [HttpGet("address")] //Get: /api/account/address
-        public async Task<ActionResult<Address>> GetUserAddress()
+        public async Task<ActionResult<AddressDto>> GetUserAddress()
         {
             
             var user=await userManager.FindUserWithAddressAsync(User);
-            return Ok(user.Address);
+            return Ok(mapper.Map<AddressDto>(user.Address));
         }
 
         #endregion
