@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Demo.Talabat.Infrastructure.Data.Config
+namespace Demo.Talabat.Infrastructure.Data.Config.Product_Config
 {
 	internal class ProductCategoryConfigurations : IEntityTypeConfiguration<ProductCategory>
 	{

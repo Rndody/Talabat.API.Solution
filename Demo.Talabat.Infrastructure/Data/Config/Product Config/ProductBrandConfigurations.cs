@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
-namespace Demo.Talabat.Infrastructure.Data.Config
+namespace Demo.Talabat.Infrastructure.Data.Config.Product_Config
 {
 	internal class ProductBrandConfigurations : IEntityTypeConfiguration<ProductBrand>
 	{
