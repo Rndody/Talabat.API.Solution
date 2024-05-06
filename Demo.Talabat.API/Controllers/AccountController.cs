@@ -2,9 +2,11 @@
 using Demo.Talabat.API.Errors;
 using Demo.Talabat.Core.Entities.Identity;
 using Demo.Talabat.Core.Services.Contract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Demo.Talabat.API.Controllers
 {
@@ -74,6 +76,23 @@ namespace Demo.Talabat.API.Controllers
                 Email = user.Email,
                 Token = await authService.CreateTokenAsync(user, userManager)
 
+            });
+        }
+        #endregion
+
+        #region Get Current User
+        [Authorize]
+        [HttpGet]//Get: /Api/Account
+
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+            var user = await userManager.FindByEmailAsync(email);
+            return Ok(new UserDto()
+            {
+                DisplayName = user?.DisplayName ?? string.Empty,
+                Email = user?.Email ?? string.Empty,
+                Token = await authService.CreateTokenAsync(user, userManager)
             });
         }
         #endregion
