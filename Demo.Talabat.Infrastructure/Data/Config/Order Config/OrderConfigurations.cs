@@ -20,13 +20,19 @@ namespace Demo.Talabat.Infrastructure.Data.Config.Order_Config
                 (OStatus) => OStatus.ToString(),
                 (OStatus) => (OrderStatus)Enum.Parse(typeof(OrderStatus), OStatus)
                 );
-
             //builder.HasOne(order => order.DeliveryMethod)
             //    .WithMany();
 
             builder.Property(order => order.Subtotal)
               .HasColumnType("decimal()12,2");
 
+            builder.HasOne(order => order.DeliveryMethod)
+                .WithMany()
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(order => order.Items)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

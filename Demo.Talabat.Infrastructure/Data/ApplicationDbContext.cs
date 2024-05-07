@@ -1,4 +1,5 @@
-﻿using Demo.Talabat.Core.Entities.Product;
+﻿using Demo.Talabat.Core.Entities.Order_Aggregate;
+using Demo.Talabat.Core.Entities.Product;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,13 @@ namespace Demo.Talabat.Infrastructure.Data
 		public DbSet<Product> Products { get; set; }
 		public DbSet<ProductBrand> Brands { get; set; }
 		public DbSet<ProductCategory> Categories { get; set; }
+
+
+		///Order Module DbSets
+		public DbSet<Order> Orders { get; set; }
+		public DbSet<OrderItem> OrderItems { get; set; }
+		public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+		
 		#endregion
 
 		#region Methods
