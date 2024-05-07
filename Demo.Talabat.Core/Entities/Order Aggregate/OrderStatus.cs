@@ -11,9 +11,11 @@ namespace Demo.Talabat.Core.Entities.Order_Aggregate
     {
         //the payment status [paid / pending ...]
 
-       // [EnumMember(Value ="Pending")] discuss this data annotation later 
+       [EnumMember(Value ="Pending")] //discuss this data annotation later 
         Pending,
-        PaymentReceived, 
+        [EnumMember(Value = "Payment Received")]
+        PaymentReceived,
+        [EnumMember(Value = "PaymentFailed")]
         PaymentFailed
 
     }

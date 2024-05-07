@@ -24,7 +24,7 @@ namespace Demo.Talabat.Core.Entities.Order_Aggregate
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public Address ShippingAddress { get; set; } = null!;
 
-        public int? DeliveryMethodId { get; set; }//FK
+       // public int? DeliveryMethodId { get; set; }//FK
         #region //Navigational Properties
         public virtual DeliveryMethod? DeliveryMethod { get; set; }//Navigational Property [ONE]
         public virtual ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>();//Navigational Property [Many] 

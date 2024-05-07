@@ -71,13 +71,13 @@ namespace Demo.Talabat.Application.OrderService
             var orders = await ordersRepo.GetAllWithSpecAsync(spec);
             return orders;
         }
-        public Task<Order?> GetOrderByIdForUserAsync(string buyerEmail, int orderId)
-        {
-            var orderRepo = unitOfWork.Repository<Order>();
-            var orderSpec = new OrderSpecifications(orderId, buyerEmail);
-            var order = orderRepo.GetByIdWithSpecAsync(orderSpec);
-            return order;
-        }
+        public async Task<Order?> GetOrderByIdForUserAsync(string buyerEmail, int orderId)
+        /* {
+             var orderRepo = unitOfWork.Repository<Order>();
+             var orderSpec = new OrderSpecifications(orderId, buyerEmail);
+             var order = orderRepo.GetByIdWithSpecAsync(orderSpec);
+             return order;
+         }*/  => await unitOfWork.Repository<Order>().GetByIdWithSpecAsync(new OrderSpecifications(orderId, buyerEmail));
         public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
         {
             throw new NotImplementedException();
