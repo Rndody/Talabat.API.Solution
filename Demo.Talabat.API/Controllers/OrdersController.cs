@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Talabat.API.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi =true)]
+    [Authorize]
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService orderService;
@@ -31,14 +33,13 @@ namespace Demo.Talabat.API.Controllers
             return Ok(mapper.Map<Order, OrderToReturnDto>(order));
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUser(string email)
         {
             var orders = await orderService.GetOrdersForUserAsync(email);
             return Ok(mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
         }
-        [Authorize]
+   
         [ProducesResponseType(typeof(OrderToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
@@ -50,7 +51,6 @@ namespace Demo.Talabat.API.Controllers
 
         }
 
-        [Authorize]
         [HttpGet("deliveryMethods")]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
         {

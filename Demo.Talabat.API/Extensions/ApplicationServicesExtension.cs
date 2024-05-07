@@ -1,4 +1,5 @@
 ﻿using Demo.Talabat.API.Helpers;
+using Demo.Talabat.Application;
 using Demo.Talabat.Application.AuthService;
 using Demo.Talabat.Application.OrderService;
 using Demo.Talabat.Core;
@@ -16,8 +17,9 @@ namespace Demo.Talabat.API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped(typeof(IProductService), typeof(ProductService));
             services.AddScoped(typeof(IOrderService), typeof(OrderService));
-            services.AddScoped(typeof(IUnitOfWork),typeof(UnitOfWork));
+            services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
 
 
