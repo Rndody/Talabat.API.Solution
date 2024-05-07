@@ -76,7 +76,7 @@ namespace Demo.Talabat.API.Controllers
 			///this endpoint takes parameter [id] ... but our class ProductWithBrandAndCategorySpecifications has only parameter-less constructor
 			///we need to add another constructor to send it the Id and use it in the Criteria property 
 			var spec = new ProductWithBrandAndCategorySpecifications(id);
-			var product = await productRepo/*.GetAsync(id)*/.GetWithSpecAsync(spec);
+			var product = await productRepo/*.GetAsync(id)*/.GetByIdWithSpecAsync(spec);
 			if (product == null) return NotFound(new ApiResponse(404));
 			return Ok(mapper.Map<Product, ProductToReturnDto>(product));
 		}

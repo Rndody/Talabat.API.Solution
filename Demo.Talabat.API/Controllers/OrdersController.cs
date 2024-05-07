@@ -19,8 +19,8 @@ namespace Demo.Talabat.API.Controllers
             this.mapper = mapper;
         }
 
-        //[ProducesResponseType(typeof(Order), StatusCode.Status200Ok)]
-        //[ProducesResponseType(typeof(ApiResponse), StatusCode.Status400BadRequest)]
+        [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
         {
@@ -33,8 +33,18 @@ namespace Demo.Talabat.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser(string email)
         {
-            var orders =await orderService.GetOrdersForUserAsync(email);
+            var orders = await orderService.GetOrdersForUserAsync(email);
             return Ok(orders);
+
+        }
+        [ProducesResponseType(typeof(Order),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Order>> GetOrderForUser(int id, string email)
+        {
+            var order = await orderService.GetOrderByIdForUserAsync(email, id);
+            if (order == null) return NotFound(new ApiResponse(404));
+            return Ok(order);
 
         }
     }
