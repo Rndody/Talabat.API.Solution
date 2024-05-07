@@ -30,5 +30,12 @@ namespace Demo.Talabat.API.Controllers
             return Ok(order);
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser(string email)
+        {
+            var orders =await orderService.GetOrdersForUserAsync(email);
+            return Ok(orders);
+
+        }
     }
 }
