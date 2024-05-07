@@ -78,10 +78,10 @@ namespace Demo.Talabat.Application.OrderService
              var order = orderRepo.GetByIdWithSpecAsync(orderSpec);
              return order;
          }*/  => await unitOfWork.Repository<Order>().GetByIdWithSpecAsync(new OrderSpecifications(orderId, buyerEmail));
-        public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
-        {
-            throw new NotImplementedException();
-        }
+      
+        
+        public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
+                  => await unitOfWork.Repository<DeliveryMethod>().GetAllAsync();
 
     }
 }

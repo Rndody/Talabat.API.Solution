@@ -3,6 +3,7 @@ using Demo.Talabat.API.DTOs;
 using Demo.Talabat.API.Errors;
 using Demo.Talabat.Core.Entities.Order_Aggregate;
 using Demo.Talabat.Core.Services.Contract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,13 +31,14 @@ namespace Demo.Talabat.API.Controllers
             return Ok(mapper.Map<Order, OrderToReturnDto>(order));
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUser(string email)
         {
             var orders = await orderService.GetOrdersForUserAsync(email);
             return Ok(mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
         }
-
+        [Authorize]
         [ProducesResponseType(typeof(OrderToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
@@ -46,6 +48,14 @@ namespace Demo.Talabat.API.Controllers
             if (order == null) return NotFound(new ApiResponse(404));
             return Ok(mapper.Map<OrderToReturnDto>(order));
 
+        }
+
+        [Authorize]
+        [HttpGet("deliveryMethods")]
+        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        {
+            var deliveryMethods=await orderService.GetDeliveryMethodsAsync();
+            return Ok(deliveryMethods);
         }
     }
 }
