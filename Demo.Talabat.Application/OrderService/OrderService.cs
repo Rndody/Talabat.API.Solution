@@ -17,7 +17,10 @@ namespace Demo.Talabat.Application.OrderService
         private readonly IGenericRepository<DeliveryMethod> deliveryMethodRepo;
         private readonly IGenericRepository<Order> orderRepo;
 
-        public OrderService(IBasketRepository basketRepo, IGenericRepository<Product> productRepo, IGenericRepository<DeliveryMethod> deliveryMethodRepo, IGenericRepository<Order> orderRepo)
+        public OrderService( IBasketRepository basketRepo,
+                                        IGenericRepository<Product> productRepo,
+                                        IGenericRepository<DeliveryMethod> deliveryMethodRepo,
+                                        IGenericRepository<Order> orderRepo)
         {
             this.basketRepo = basketRepo;
             this.productRepo = productRepo;
