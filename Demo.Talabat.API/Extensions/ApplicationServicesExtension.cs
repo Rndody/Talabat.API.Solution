@@ -1,5 +1,6 @@
 ﻿using Demo.Talabat.API.Helpers;
 using Demo.Talabat.Application.AuthService;
+using Demo.Talabat.Application.OrderService;
 using Demo.Talabat.Core;
 using Demo.Talabat.Core.Repositories.Contract;
 using Demo.Talabat.Core.Services.Contract;
@@ -15,6 +16,7 @@ namespace Demo.Talabat.API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped(typeof(IOrderService), typeof(OrderService));
             services.AddScoped(typeof(IUnitOfWork),typeof(UnitOfWork));
             services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
 
