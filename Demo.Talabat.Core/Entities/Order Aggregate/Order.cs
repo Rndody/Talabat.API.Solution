@@ -10,13 +10,14 @@ namespace Demo.Talabat.Core.Entities.Order_Aggregate
     public class Order : BaseEntity
     { //will be mapped as table in database
         private Order() { }
-        public Order(string buyerEmail, Address shippingAddress, DeliveryMethod? deliveryMethod, ICollection<OrderItem> items, decimal subtotal)
+        public Order(string buyerEmail, Address shippingAddress, DeliveryMethod? deliveryMethod, ICollection<OrderItem> items, decimal subtotal, string paymentIntentId)
         {
             BuyerEmail = buyerEmail;
             ShippingAddress = shippingAddress;
             DeliveryMethod = deliveryMethod;
             Items = items;
             Subtotal = subtotal;
+            PaymentIntentId = paymentIntentId;
         }
 
         public string BuyerEmail { get; set; } = null!;
@@ -24,7 +25,7 @@ namespace Demo.Talabat.Core.Entities.Order_Aggregate
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public Address ShippingAddress { get; set; } = null!;
 
-       // public int? DeliveryMethodId { get; set; }//FK
+        // public int? DeliveryMethodId { get; set; }//FK
         #region //Navigational Properties
         public virtual DeliveryMethod? DeliveryMethod { get; set; }//Navigational Property [ONE]
         public virtual ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>();//Navigational Property [Many] 
@@ -34,6 +35,6 @@ namespace Demo.Talabat.Core.Entities.Order_Aggregate
         //public decimal Total  => Subtotal + DeliveryMethod.Cost; //readonly property  {get}
 
         public decimal GetTotal() => Subtotal + DeliveryMethod.Cost; //getter method
-        public string PaymentIntentId { get; set; } = string.Empty;
+        public string PaymentIntentId { get; set; }
     }
 }
