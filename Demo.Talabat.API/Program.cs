@@ -80,6 +80,13 @@ namespace Demo.Talabat.API
                 return ConnectionMultiplexer.Connect(connection);
             });
 
+
+            //webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>()// AddIdentity register the Identity services in the container
+            //    .AddEntityFrameworkStores<ApplicationIdentityDbContext>(); // register the repositories in the container 
+
+            #region adding the authentication method as extension method
+            webApplicationBuilder.Services.AddAuthServices(webApplicationBuilder.Configuration);
+
             webApplicationBuilder.Services.AddCors(options =>
             {
                 options.AddPolicy("MyPolicy", policyOptions =>
@@ -87,12 +94,6 @@ namespace Demo.Talabat.API
                     policyOptions.AllowAnyHeader()./*WithMethods("GET,POST")*/ AllowAnyMethod().WithOrigins(webApplicationBuilder.Configuration["FrontBaseUrl"]);
                 });
             });
-
-            //webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>()// AddIdentity register the Identity services in the container
-            //    .AddEntityFrameworkStores<ApplicationIdentityDbContext>(); // register the repositories in the container 
-
-            #region adding the authentication method as extension method
-            webApplicationBuilder.Services.AddAuthServices(webApplicationBuilder.Configuration);
 
             #region  2nd  and 3rd overlads for the AddAuthentication method 
             ///2nd overload 
@@ -128,8 +129,6 @@ namespace Demo.Talabat.API
             #endregion
 
             #endregion
-
-
 
 
 

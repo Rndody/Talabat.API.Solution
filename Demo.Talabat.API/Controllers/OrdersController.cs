@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Talabat.API.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi =true)]
+   // [ApiExplorerSettings(IgnoreApi =true)]
     [Authorize /*(Policy="")*/]
     public class OrdersController : BaseApiController
     {

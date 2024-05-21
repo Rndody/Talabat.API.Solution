@@ -3,6 +3,7 @@ using Demo.Talabat.Core.Entities;
 using Demo.Talabat.Core.Entities.Order_Aggregate;
 using Demo.Talabat.Core.Repositories.Contract;
 using Demo.Talabat.Core.Services.Contract;
+using Demo.Talabat.Core.Specifications.Order_Specs;
 using Microsoft.Extensions.Configuration;
 using Stripe;
 using System;
@@ -81,6 +82,22 @@ namespace Demo.Talabat.Application.PaymentService
 
             await basketRepo.UpdateBasketAsync(basket);
             return basket;
+        }
+
+        public async Task<Order> UpdateOrderStatus(string paymentIntentId, bool isPaid)
+        {
+            var orderRepo = unitOfWork.Repository<Order>();
+            var spec = new OrderWithPaymentIntentSpecification(paymentIntentId);
+            var order = await orderRepo.GetByIdWithSpecAsync(spec);
+
+            if (order == null) return null;
+            if (isPaid) order.Status = OrderStatus.PaymentReceived;
+            else order.Status = OrderStatus.PaymentFailed;
+
+            orderRepo.Update(order);
+            await unitOfWork.CompleteAsync();   
+
+            return order;
         }
     }
 }
