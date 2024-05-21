@@ -80,8 +80,8 @@ namespace Demo.Talabat.API
                 return ConnectionMultiplexer.Connect(connection);
             });
 
-            webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>()// AddIdentity register the Identity services in the container
-                .AddEntityFrameworkStores<ApplicationIdentityDbContext>(); // register the repositories in the container 
+            //webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>()// AddIdentity register the Identity services in the container
+            //    .AddEntityFrameworkStores<ApplicationIdentityDbContext>(); // register the repositories in the container 
           
             #region adding the authentication method as extension method
             webApplicationBuilder.Services.AddAuthServices(webApplicationBuilder.Configuration);
