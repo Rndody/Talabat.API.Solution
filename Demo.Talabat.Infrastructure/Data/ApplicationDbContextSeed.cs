@@ -1,4 +1,5 @@
-﻿using Demo.Talabat.Core.Entities.Product;
+﻿using Demo.Talabat.Core.Entities.Order_Aggregate;
+using Demo.Talabat.Core.Entities.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,21 @@ namespace Demo.Talabat.Infrastructure.Data
 				} 
 			}
 
-		}
+            if (!dbContext.DeliveryMethods.Any())
+            {
+                var deliveryMethodsData = File.ReadAllText("../Demo.Talabat.Infrastructure/Data/DataSeed/delivery.json");
+                var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodsData);
+
+                if (deliveryMethods?.Count > 0)
+                {
+                    foreach (var deliveryMethod in deliveryMethods)
+                    {
+                        dbContext.Set<DeliveryMethod>().Add(deliveryMethod);
+                    }
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+
+        }
 	}
 }
