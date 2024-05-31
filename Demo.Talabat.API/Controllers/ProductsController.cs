@@ -41,13 +41,14 @@ namespace Demo.Talabat.API.Controllers
             //this.categoriesRepo = categoriesRepo;
             this.mapper = mapper;
 		}
-        #endregion
+		#endregion
 
-        #region Endpoints
-        //4 endpoints 
-        //------------------------------ First Endpoints ----------------------------------------
-        //[Authorize   (AuthenticationSchemes =/*"Bearer"*/ JwtBearerDefaults.AuthenticationScheme)] //we specified the DefaultChallengeScheme in the Main()
-        [Authorize]
+		#region Endpoints
+		//4 endpoints 
+		//------------------------------ First Endpoints ----------------------------------------
+		//[Authorize   (AuthenticationSchemes =/*"Bearer"*/ JwtBearerDefaults.AuthenticationScheme)] //we specified the DefaultChallengeScheme in the Main()
+		// [Authorize]
+		[Cached(600)]
 		[HttpGet] //Get: /api/products
 		//public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams ) 
 		public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams ) //we won't use the name of the method in the routing as we used to do in the MVC
