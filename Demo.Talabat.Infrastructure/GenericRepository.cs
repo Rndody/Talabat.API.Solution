@@ -26,7 +26,7 @@ namespace Demo.Talabat.Infrastructure
 		#endregion
 
 		#region Methods
-		public async Task<IEnumerable<T>> GetAllAsync()
+		public async Task<IReadOnlyList<T>> GetAllAsync()
 		///if (typeof(T) == typeof(Product))
 		///	return (IEnumerable<T>)await dbContext.Set<Product>().Include(P => P.Brand).Include(P => P.Category).ToListAsync();
 		=> await dbContext.Set<T>().AsNoTracking().ToListAsync(); //remember AsNoTracking we only get data we won't make modification on it
@@ -38,16 +38,21 @@ namespace Demo.Talabat.Infrastructure
 			=> await dbContext.Set<T>().FindAsync(id); //the FindAsync may return object or null ..so we need to make the T? nulable //change it in the interface also 	
 
 		//-----------------------------With Specification 
-		public async Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
+		public async Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
 		//call the method that will get the query //call it by class as it is static
 		=> await /*SpecificationsEvaluator<T>.GetQuery(dbContext.Set<T>(), spec)*/ApplySpecifications(spec).AsNoTracking().ToListAsync();
 
 		public async Task<T?> GetWithSpecAsync(ISpecifications<T> spec)
 		=> await /*SpecificationsEvaluator<T>.GetQuery(dbContext.Set<T>(), spec)*/ApplySpecifications(spec).FirstOrDefaultAsync();
 
+		public async Task<int> GetCountAsync(ISpecifications<T> spec)
+		{
+			return await ApplySpecifications(spec).CountAsync();
+		}
 		/// write the common code in a separate method ---->		
 		private IQueryable<T> ApplySpecifications(ISpecifications<T> specifications)
 	=> SpecificationsEvaluator<T>.GetQuery(dbContext.Set<T>(), specifications);
+
 		#endregion
 	}
 }
