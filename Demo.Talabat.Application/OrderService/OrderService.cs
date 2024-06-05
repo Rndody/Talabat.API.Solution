@@ -16,6 +16,7 @@ namespace Demo.Talabat.Application.OrderService
     {
         private readonly IBasketRepository basketRepo;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IPaymentService paymentService;
 
         //private readonly IGenericRepository<Product> productRepo;
         //private readonly IGenericRepository<DeliveryMethod> deliveryMethodRepo;
@@ -25,10 +26,12 @@ namespace Demo.Talabat.Application.OrderService
                                         //IGenericRepository<Product> productRepo,
                                         //IGenericRepository<DeliveryMethod> deliveryMethodRepo,
                                         //IGenericRepository<Order> orderRepo
-                                        IUnitOfWork unitOfWork)
+                                        IUnitOfWork unitOfWork,
+                                        IPaymentService paymentService)
         {
             this.basketRepo = basketRepo;
             this.unitOfWork = unitOfWork;
+            this.paymentService = paymentService;
             //this.productRepo = productRepo;
             //this.deliveryMethodRepo = deliveryMethodRepo;
             //this.orderRepo = orderRepo;
@@ -50,14 +53,23 @@ namespace Demo.Talabat.Application.OrderService
             var subtotal = orderItems.Sum(item => item.Price * item.Quantity);
 
             var deliveryMethod = await unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
+            var orderRepo = unitOfWork.Repository<Order>();
+            var spec = new OrderWithPaymentIntentSpecification(basket?.PaymentIntentId);
+            var existingOrder = await orderRepo.GetByIdWithSpecAsync(spec);
 
+            if (existingOrder != null)
+            {
+                orderRepo.Delete(existingOrder);
+                await paymentService.CreateOrUpdatePaymentIntent(basketId);
+            }
             var order = new Order(
                                         buyerEmail: buyerEmail,
                                         shippingAddress: shippingAddress,
                                         deliveryMethod: deliveryMethod,
                                         items: orderItems,
-                                        subtotal: subtotal);
-            unitOfWork.Repository<Order>().Add(order);
+                                        subtotal: subtotal,
+                                        paymentIntentId: basket?.PaymentIntentId ?? "");
+            orderRepo.Add(order);
             var result = await unitOfWork.CompleteAsync();
             if (result <= 0) return null;
             return order;
@@ -78,8 +90,8 @@ namespace Demo.Talabat.Application.OrderService
              var order = orderRepo.GetByIdWithSpecAsync(orderSpec);
              return order;
          }*/  => await unitOfWork.Repository<Order>().GetByIdWithSpecAsync(new OrderSpecifications(orderId, buyerEmail));
-      
-        
+
+
         public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
                   => await unitOfWork.Repository<DeliveryMethod>().GetAllAsync();
 

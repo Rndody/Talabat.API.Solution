@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Talabat.API.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi =true)]
-    [Authorize]
+   // [ApiExplorerSettings(IgnoreApi =true)]
+    [Authorize /*(Policy="")*/]
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService orderService;

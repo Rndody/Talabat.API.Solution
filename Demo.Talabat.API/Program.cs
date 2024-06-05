@@ -74,17 +74,26 @@ namespace Demo.Talabat.API
             });
 
 
-            webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+            webApplicationBuilder.Services./*AddSingleton*/AddScoped<IConnectionMultiplexer>((serviceProvider) =>
             {
                 var connection = webApplicationBuilder.Configuration.GetConnectionString("Redis");
                 return ConnectionMultiplexer.Connect(connection);
             });
 
-            webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>()// AddIdentity register the Identity services in the container
-                .AddEntityFrameworkStores<ApplicationIdentityDbContext>(); // register the repositories in the container 
-          
+
+            //webApplicationBuilder.Services.AddIdentity<ApplicationUser, IdentityRole>()// AddIdentity register the Identity services in the container
+            //    .AddEntityFrameworkStores<ApplicationIdentityDbContext>(); // register the repositories in the container 
+
             #region adding the authentication method as extension method
             webApplicationBuilder.Services.AddAuthServices(webApplicationBuilder.Configuration);
+
+            webApplicationBuilder.Services.AddCors(options =>
+            {
+                options.AddPolicy("MyPolicy", policyOptions =>
+                {
+                    policyOptions.AllowAnyHeader()./*WithMethods("GET,POST")*/ AllowAnyMethod().WithOrigins(webApplicationBuilder.Configuration["FrontBaseUrl"]);
+                });
+            });
 
             #region  2nd  and 3rd overlads for the AddAuthentication method 
             ///2nd overload 
@@ -116,12 +125,10 @@ namespace Demo.Talabat.API
 
             #endregion
 
-         //   webApplicationBuilder.Services.AddScoped(typeof(IAuthService), typeof(AuthService));
+            //   webApplicationBuilder.Services.AddScoped(typeof(IAuthService), typeof(AuthService));
             #endregion
 
             #endregion
-
-
 
 
 
@@ -185,6 +192,9 @@ namespace Demo.Talabat.API
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            ///middel ware to enable the angular project to consume our API
+            app.UseCors("MyPolicy");
 
             app.MapControllers(); //reads the route of the controller from the controller Attribute Decorator
             #endregion
