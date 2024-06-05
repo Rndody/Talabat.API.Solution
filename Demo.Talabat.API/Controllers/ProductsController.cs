@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Talabat.API.Controllers
 {
+ //   [Authorize]
     public class ProductsController : BaseApiController
     {
         private readonly IProductService productService;
@@ -47,7 +48,7 @@ namespace Demo.Talabat.API.Controllers
         //4 endpoints 
         //------------------------------ First Endpoints ----------------------------------------
         //[Authorize   (AuthenticationSchemes =/*"Bearer"*/ JwtBearerDefaults.AuthenticationScheme)] //we specified the DefaultChallengeScheme in the Main()
-        // [Authorize]
+        [Authorize]    
         [Cached(600)]
         [HttpGet] //Get: /api/products
                   //public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams ) 
@@ -78,11 +79,12 @@ namespace Demo.Talabat.API.Controllers
         }
         //------------------------------ Second Endpoints ----------------------------------------
         #region improvment for swagger documentation
-        [Cached(600)]
-        [HttpGet("{id}")]
         [ProducesResponseType(typeof(ProductToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         #endregion
+        //[Authorize]
+        [Cached(600)]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             ///this endpoint takes parameter [id] ... but our class ProductWithBrandAndCategorySpecifications has only parameter-less constructor
@@ -95,6 +97,7 @@ namespace Demo.Talabat.API.Controllers
         }
 
         //------------------------------ Third  Endpoints ----------------------------------------
+    //    [Authorize]
         [Cached(600)]
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
@@ -105,6 +108,7 @@ namespace Demo.Talabat.API.Controllers
         }
 
         //------------------------------ Fourth Endpoints ----------------------------------------
+        //[Authorize]
         [Cached(600)]
         [HttpGet("categories")]
         public async Task<ActionResult<IReadOnlyList<ProductCategory>>> GetCategories()
