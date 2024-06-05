@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Demo.Talabat.API.DTOs;
 using Demo.Talabat.Core.Entities;
-using Demo.Talabat.Core.Entities.Identity;
+//using Demo.Talabat.Core.Entities.Identity;
+using Demo.Talabat.Core.Entities.Order_Aggregate;
 using Demo.Talabat.Core.Entities.Product;
 
 namespace Demo.Talabat.API.Helpers
@@ -23,7 +24,20 @@ namespace Demo.Talabat.API.Helpers
             CreateMap<CustomerBasketDto, CustomerBasket>();
             CreateMap<BasketItemDto, BasketItem>();
 
-            CreateMap<Address, AddressDto>().ReverseMap();
+            CreateMap<AddressDto, Address>().ReverseMap();
+            CreateMap<Order, OrderToReturnDto>()
+                .ForMember(d => d.DeliveryMethod, O => O.MapFrom(s => s.DeliveryMethod.ShortName))
+                .ForMember(d => d.DeliveryMethodCost, O => O.MapFrom(s => s.DeliveryMethod.Cost));
+            CreateMap<OrderItem, OrderItemDto>()
+                            .ForMember(d => d.ProductId, O => O.MapFrom(s => s.Product.ProductId))
+                            .ForMember(d => d.ProductName, O => O.MapFrom(s => s.Product.ProductName))
+                            .ForMember(d => d.PictureUrl, O => O.MapFrom(s => s.Product.PictureUrl))
+                            .ForMember(d => d.PictureUrl, O => O.MapFrom<OrderItemPictureUrlResolver>());
+            ;
+
+
+
+
         }
     }
 }

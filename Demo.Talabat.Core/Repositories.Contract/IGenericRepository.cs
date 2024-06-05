@@ -10,12 +10,16 @@ namespace Demo.Talabat.Core.Repositories.Contract
 {
 	public interface IGenericRepository<T> where T : BaseEntity //repositories run against Domain Models /Domain Entities 
 	{
+		Task<T?> GetByIdAsync(int id);
 		Task<IReadOnlyList<T>> GetAllAsync();
-		Task<T?> GetAsync(int id);
 
+		Task<T?> GetByIdWithSpecAsync(ISpecifications<T> spec);
 		Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecifications<T> spec);
-		Task<T?> GetWithSpecAsync(ISpecifications<T> spec);
 
 		Task<int> GetCountAsync(ISpecifications<T> spec);
+
+		void Add(T entity);	
+		void Update(T entity);
+		void Delete(T entity);
 	}
 }

@@ -1,5 +1,8 @@
 ﻿using Demo.Talabat.API.Helpers;
+using Demo.Talabat.Application;
 using Demo.Talabat.Application.AuthService;
+using Demo.Talabat.Application.OrderService;
+using Demo.Talabat.Core;
 using Demo.Talabat.Core.Repositories.Contract;
 using Demo.Talabat.Core.Services.Contract;
 using Demo.Talabat.Infrastructure;
@@ -14,10 +17,13 @@ namespace Demo.Talabat.API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped(typeof(IProductService), typeof(ProductService));
+            services.AddScoped(typeof(IOrderService), typeof(OrderService));
+            services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
 
 
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             /*instead of adding each domain model in a separate line
 			 * [when asking for creating object from Interface IGenericRepository<Product> --> create object from class GenericRepository<Product> ]
 			*we can use the 2nd overload of the AddScoped method that determines the lifetime of the object, 
