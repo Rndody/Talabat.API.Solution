@@ -6,6 +6,7 @@ using Demo.Talabat.Core.Repositories.Contract;
 using Demo.Talabat.Infrastructure;
 using Demo.Talabat.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace Demo.Talabat.API
 {
@@ -42,6 +43,11 @@ namespace Demo.Talabat.API
 			   ///in .net 5 in the StartUp	class we used to have Configuration property 
 			   ///now the webApplicationBuilder object has Configuration property --> from type ConfigurationManager
 				Options.UseLazyLoadingProxies().UseSqlServer(webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection"));
+			});
+			webApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+			{
+				var connection = webApplicationBuilder.Configuration.GetConnectionString("Redis");
+				return ConnectionMultiplexer.Connect(connection);
 			});
 
 			#region Clean Up Program Class [Services]
