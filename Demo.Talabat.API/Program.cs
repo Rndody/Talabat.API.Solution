@@ -74,7 +74,7 @@ namespace Demo.Talabat.API
             });
 
 
-            webApplicationBuilder.Services./*AddSingleton*/AddScoped<IConnectionMultiplexer>((serviceProvider) =>
+            webApplicationBuilder.Services./*AddScoped*/AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
             {
                 var connection = webApplicationBuilder.Configuration.GetConnectionString("Redis");
                 return ConnectionMultiplexer.Connect(connection);

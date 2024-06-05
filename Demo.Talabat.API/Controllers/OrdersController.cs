@@ -25,7 +25,7 @@ namespace Demo.Talabat.API.Controllers
         [ProducesResponseType(typeof(OrderToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [HttpPost]
-        public async Task<ActionResult<OrderToReturnDto>> CreateOrder(OrderDto orderDto)
+        public async Task<ActionResult<OrderToReturnDto?>> CreateOrder(OrderDto orderDto)
         {
             var address = mapper.Map<AddressDto, Address>(orderDto.ShippingAddress);
             var order = await orderService.CreateOrderAsync(orderDto.BuyerEmail, orderDto.BasketId, orderDto.DeliveryMethdId, /*orderDto.ShippingAddress*/address);

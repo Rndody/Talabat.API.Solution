@@ -9,7 +9,6 @@ using Stripe;
 
 namespace Demo.Talabat.API.Controllers
 {
-    [Authorize]
     public class PaymentController : BaseApiController
     {
         private readonly IPaymentService paymentService;
@@ -25,6 +24,7 @@ namespace Demo.Talabat.API.Controllers
             this.logger = logger;
         }
 
+        [Authorize]
         [ProducesResponseType(typeof(CustomerBasket), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [HttpPost("{basketid}")]// post: /api/payments/{basketid}

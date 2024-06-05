@@ -1,6 +1,7 @@
 ﻿using Demo.Talabat.API.Helpers;
 using Demo.Talabat.Application;
 using Demo.Talabat.Application.AuthService;
+using Demo.Talabat.Application.CacheService;
 using Demo.Talabat.Application.OrderService;
 using Demo.Talabat.Application.PaymentService;
 using Demo.Talabat.Core;
@@ -21,7 +22,7 @@ namespace Demo.Talabat.API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-
+            services.AddSingleton(typeof(IResponseCacheService), typeof(ResponseCacheService));
 
             services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
             services.AddScoped(typeof(IProductService), typeof(ProductService));
